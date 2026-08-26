@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#18284f" />
+  <meta name="description" content="Circuit City: a colourful, offline educational electricity puzzle game for ages 6–12." />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="icons/icon-192.png" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <link rel="stylesheet" href="styles.css" />
+  <title>Circuit City</title>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to game</a>
+  <header class="topbar">
+    <button id="homeBtn" class="brand" type="button" aria-label="Go to Circuit City map">
+      <span class="brand-mark" aria-hidden="true">⚡</span>
+      <span><strong>Circuit City</strong><small>Junior Engineer HQ</small></span>
+    </button>
+    <div class="status-strip" aria-label="Player progress">
+      <span class="status-pill" title="Stars"><span aria-hidden="true">★</span><strong id="starCount">0</strong></span>
+      <span class="status-pill" title="Badges"><span aria-hidden="true">🏅</span><strong id="badgeCount">0</strong></span>
+      <button id="avatarBtn" class="avatar-button" type="button" aria-label="Choose engineer avatar"><span id="avatarIcon" aria-hidden="true">🧑‍🔧</span></button>
+    </div>
+  </header>
+
+  <nav class="main-nav" aria-label="Main sections">
+    <button class="nav-btn active" data-screen="city" type="button">🏙️ City</button>
+    <button class="nav-btn" data-screen="lab" type="button">🧪 Free Build Lab</button>
+    <button class="nav-btn" data-screen="achievements" type="button">🏆 Achievements</button>
+    <button class="nav-btn" data-screen="settings" type="button">⚙️ Settings</button>
+  </nav>
+
+  <main id="main" tabindex="-1">
+    <section id="cityScreen" class="screen active" aria-labelledby="cityTitle">
+      <div class="hero-panel">
+        <div>
+          <p class="eyebrow">CITY POWER: <span id="cityPowerLabel">0%</span></p>
+          <h1 id="cityTitle">Bring the city back to life</h1>
+          <p>Solve circuit puzzles building by building. Every repair lights up more of Circuit City.</p>
+        </div>
+        <div class="power-meter" role="progressbar" aria-label="City power restored" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+          <div id="powerMeterFill"></div>
+        </div>
+      </div>
+      <div id="cityMap" class="city-map" aria-label="Circuit City map"></div>
+    </section>
+
+    <section id="labScreen" class="screen" aria-labelledby="labTitle">
+      <div class="section-heading">
+        <div><p class="eyebrow">NO OBJECTIVE • EXPERIMENT FREELY</p><h1 id="labTitle">Free Build Lab</h1></div>
+        <div class="inline-actions">
+          <button id="newLabBtn" class="btn secondary" type="button">New circuit</button>
+          <button id="saveLabBtn" class="btn" type="button">Save circuit</button>
+        </div>
+      </div>
+      <div id="labWorkbenchMount"></div>
+      <section class="saved-lab-panel" aria-labelledby="savedLabTitle">
+        <h2 id="savedLabTitle">Saved experiments</h2>
+        <div id="savedLabList" class="saved-list"></div>
+      </section>
+    </section>
+
+    <section id="achievementsScreen" class="screen" aria-labelledby="achievementsTitle">
+      <div class="section-heading"><div><p class="eyebrow">ENGINEER JOURNAL</p><h1 id="achievementsTitle">Achievements & badges</h1></div></div>
+      <div id="achievementsGrid" class="achievement-grid"></div>
+    </section>
+
+    <section id="settingsScreen" class="screen" aria-labelledby="settingsTitle">
+      <div class="section-heading"><div><p class="eyebrow">CONTROL PANEL</p><h1 id="settingsTitle">Settings & save data</h1></div></div>
+      <div class="settings-grid">
+        <section class="panel-card">
+          <h2>Accessibility</h2>
+          <label class="setting-row"><span><strong>Reduced motion</strong><small>Turns off moving electricity and city animations.</small></span><input id="reducedMotionToggle" type="checkbox" /></label>
+          <label class="setting-row"><span><strong>Sound effects</strong><small>Simple success and component sounds.</small></span><input id="soundToggle" type="checkbox" /></label>
+          <label class="setting-row"><span><strong>Extra-large controls</strong><small>Increases circuit buttons and touch targets.</small></span><input id="largeControlsToggle" type="checkbox" /></label>
+        </section>
+        <section class="panel-card">
+          <h2>Save data</h2>
+          <p>Progress is stored only in this browser. Export a JSON backup if you want to move devices.</p>
+          <div class="stack-actions">
+            <button id="exportSaveBtn" class="btn" type="button">Export save JSON</button>
+            <label class="btn secondary file-btn">Import save JSON<input id="importSaveInput" type="file" accept="application/json,.json" /></label>
+            <button id="resetSaveBtn" class="btn danger" type="button">Reset all progress</button>
+          </div>
+        </section>
+        <section class="panel-card">
+          <h2>Engineer avatar</h2>
+          <p>More choices unlock as you earn stars.</p>
+          <div id="avatarChoices" class="avatar-choices"></div>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="levelDialog" class="game-dialog">
+    <form method="dialog" class="dialog-topbar">
+      <button class="icon-btn" value="close" aria-label="Close level">✕</button>
+      <div><p id="levelBuilding" class="eyebrow"></p><h2 id="levelTitle"></h2></div>
+      <div id="levelStarsPreview" class="mini-stars" aria-label="Possible stars">★★★</div>
+    </form>
+    <div class="dialog-content">
+      <section class="mission-panel" aria-labelledby="missionHeading">
+        <div>
+          <h3 id="missionHeading">Mission</h3>
+          <p id="levelBrief"></p>
+          <div id="conceptCard" class="concept-card"></div>
+        </div>
+        <div class="mission-actions">
+          <button id="hintBtn" class="btn secondary" type="button">💡 Hint</button>
+          <button id="checkBtn" class="btn" type="button">⚡ Test circuit</button>
+        </div>
+      </section>
+      <div id="levelWorkbenchMount"></div>
+      <aside id="feedbackPanel" class="feedback-panel" aria-live="polite" aria-atomic="true"></aside>
+    </div>
+  </dialog>
+
+  <dialog id="rewardDialog" class="reward-dialog">
+    <div class="reward-burst" aria-hidden="true">⚡</div>
+    <p class="eyebrow">POWER RESTORED</p>
+    <h2 id="rewardTitle">Puzzle complete!</h2>
+    <div id="rewardStars" class="reward-stars"></div>
+    <p id="rewardText"></p>
+    <div id="rewardUnlocks" class="reward-unlocks"></div>
+    <form method="dialog"><button id="rewardContinueBtn" class="btn big" value="continue">Continue</button></form>
+  </dialog>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
